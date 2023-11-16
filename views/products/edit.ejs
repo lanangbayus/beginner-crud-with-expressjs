@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Product</title>
+  </head>
+  <body>
+    <h1>Edit Product</h1>
+    <div>
+      <form action="/products/<%= product._id %>?_method=PUT" method="POST">
+        <label for="nama">Nama Produk :</label>
+        <input type="text" name="name" id="name" value="<%= product.name %>" />
+        <br />
+        <label for="brand">Merk :</label>
+        <input type="text" name="brand" id="brand" value="<%= product.brand %>"/>
+        <br />
+        <label for="color">Warna :</label>
+        <input type="text" name="color" id="color" value="<%= product.color %>"/>
+        <br />
+        <label for="price">Harga :</label>
+        <input type="number" name="price" id="price" value="<%= product.price %>"/>
+        <br />
+        <label for="size">Ukuran :</label>
+        <select name="size" id="size">
+          <option value="S" <%= product.size === "S" ? "selected" : "" %>>S</option>
+          <option value="M" <%= product.size === "M" ? "selected" : "" %>>M</option>
+          <option value="L" <%= product.size === "L" ? "selected" : "" %>>L</option>
+          <option value="XL" <%= product.size === "XL" ? "selected" : "" %>>XL</option>
+        </select>
+        <br />
+        <label for="category">Kategori</label>
+        <select name="category" id="category">
+          <option value="Baju" <%= product.category === "Baju" ? "selected" : "" %>>Baju</option>
+          <option value="Celana" <%= product.category === "Celana" ? "selected" : "" %>>Celana</option>
+          <option value="Aksesoris" <%= product.category === "Aksesoris" ? "selected" : "" %>>Aksesoris</option>
+          <option value="Jaket" <%= product.category === "Jaket" ? "selected" : "" %>>Jaket</option>
+        </select>
+        <br />
+        <button type="submit">Update</button>
+      </form>
+    </div>
+  </body>
+</html>
