@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Konveksi</title>
+  </head>
+  <body>
+    <h1><%= konveksi.name %></h1>
+    <ul>
+      <li>Lokasi: <%= konveksi.location %></li>
+      <li>Kontak: <%= konveksi.contact %></li>
+    </ul>
+    <h3>Products dari konveksi <%= konveksi.name %> :</h3>
+    <ul>
+      <% for (let product of konveksi.products) { %>
+      <li><a href="/products/<%= product._id %>"><%= product.name %> - <%= product.brand %></a></li>
+      <% } %>
+    </ul>
+    <a href="/konveksis">All Konveksi</a>
+    <a href="/konveksis/<%= konveksi._id %>/edit">Edit</a>
+    <form action="/konveksis/<%= konveksi._id %>?_method=DELETE" method="POST">
+      <br />
+      <button type="submit">Delete</button>
+    </form>
+    <a href="/konveksis/<%= konveksi._id %>/products/create">Add Product</a>
+  </body>
+</html>

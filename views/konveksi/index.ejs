@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Konveksi</title>
+  </head>
+  <body>
+    <h1>Konveksi</h1>
+    <a href="/konveksis/create">Add New Konveksi</a>
+
+    <ul>
+      <% for (let konveksi of konveksis) { %>
+      <li>
+        <a href="/konveksis/<%= konveksi._id %>"><%= konveksi.name %> - <%= konveksi.location %></a>
+      </li>
+      <% } %>
+    </ul>
+  </body>
+</html>

@@ -8,6 +8,7 @@ const ErrorHandler = require("./ErrorHandler");
 
 // Models
 const Product = require("./models/product");
+const Konveksi = require("./models/konveksi");
 
 // koneksi ke mongoose
 mongoose
@@ -32,6 +33,63 @@ function wrapAsync(fn) {
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
+});
+
+app.get(
+  "/konveksis",
+  wrapAsync(async (req, res) => {
+    const konveksis = await Konveksi.find({});
+    res.render("konveksi/index", { konveksis });
+  })
+);
+
+app.get("/konveksis/create", (req, res) => {
+  res.render("konveksi/create");
+});
+
+app.post(
+  "/konveksis",
+  wrapAsync(async (req, res) => {
+    const konveksi = new Konveksi(req.body);
+    await konveksi.save();
+    res.redirect(`/konveksis`);
+  })
+);
+
+app.get(
+  "/konveksis/:id",
+  wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const konveksi = await Konveksi.findById(id).populate("products");
+    res.render("konveksi/show", { konveksi });
+  })
+);
+
+// route untuk mengedit konveksi yang sekaligus berpengaruh dengan product
+app.get("/konveksis/:konveksi_id/products/create", async (req, res) => {
+  const { konveksi_id } = req.params;
+  res.render("products/create", { konveksi_id });
+});
+
+// /konveksis/:konveksi_id/product/
+app.post(
+  "/konveksis/:konveksi_id/products",
+  wrapAsync(async (req, res) => {
+    const { konveksi_id } = req.params;
+    const konveksi = await Konveksi.findById(konveksi_id); // find data konveksi  id dimasukkan ke object konveksi
+    const product = new Product(req.body); // menyiapkan data product yg otomatis punya id
+    konveksi.products.push(product); // data product ditambahkan ke objek konveksi
+    product.konveksi = konveksi; // data konveksi ditambahkan ke data product
+    await konveksi.save(); // disave dikonveksi
+    await product.save(); // disave di bagian product
+    res.redirect(`/konveksis/${konveksi_id}`);
+  })
+);
+
+app.delete("/konveksis/:konveksi_id", async (req, res) => {
+  const { konveksi_id } = req.params;
+  const konveksi = await Konveksi.findOneAndDelete({ _id: konveksi_id });
+  res.redirect("/konveksis");
 });
 
 app.get("/products", async (req, res) => {
@@ -59,7 +117,7 @@ app.get(
   "/products/:id",
   wrapAsync(async (req, res) => {
     const { id } = req.params;
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate("konveksi");
     res.render("products/show", { product });
   })
 );

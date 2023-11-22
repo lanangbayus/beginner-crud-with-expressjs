@@ -6,7 +6,7 @@
     <title>Detail Product</title>
   </head>
   <body>
-    <h1>Show <%= product.name %></h1>
+    <h1>Product <%= product.name %></h1>
     <ul>
       <li>Brand: <%= product.brand %></li>
       <li>Warna: <%= product.color %></li>
@@ -22,5 +22,9 @@
     <form action="/products/<%= product._id %>?_method=DELETE" method="POST">
       <button type="submit">Delete</button>
     </form>
+    <h3>
+      Produk ini dibuat oleh :
+      <a href="/konveksis/<%= product.konveksi._id %>"><%= product.konveksi.name %></a>
+    </h3>
   </body>
 </html>

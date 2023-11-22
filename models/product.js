@@ -25,6 +25,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     enum: ["Baju", "Celana", "Aksesoris", "Jaket"],
   },
+  konveksi: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Konveksi",
+  },
 });
 
 const Product = mongoose.model("Product", productSchema);
