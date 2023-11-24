@@ -3,7 +3,9 @@ const router = express.Router();
 
 // restful theater
 router.get("/", (req, res) => {
-  res.send("theater index");
+  const { user, token = "" } = req.cookies;
+  console.log(user);
+  res.send(`theater index ${user} ${token}`);
 });
 
 router.get("/create", (req, res) => {

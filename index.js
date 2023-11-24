@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const app = express();
 const port = 3000;
 const ErrorHandler = require("./ErrorHandler");
+const cookieParser = require("cookie-parser");
 
 // Models
 const Product = require("./models/product");
@@ -22,13 +23,28 @@ mongoose
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+
+// define middleware
 app.use(express.urlencoded({ extended: true })); //digunakan untuk membaca body
 app.use(methodOverride("_method")); // untuk menggantikan method yang disematkan ke dalam form
+app.use(cookieParser("secret-key"));
 
 //define routes
 app.use("/theater", require("./routes/theater"));
 app.use("/movies", require("./routes/movies"));
 app.use("/admin", require("./routes/admin"));
+
+//route untuk membuat cookie
+app.get("/signingin", (req, res) => {
+  res.cookie("shiping", "bags", { signed: true });
+  res.send("signed in");
+});
+
+//route untuk mendapatkan data cookie
+app.get("/verifycookies", (req, res) => {
+  const cookies = req.signedCookies;
+  res.send(cookies);
+});
 
 function wrapAsync(fn) {
   return function (req, res, next) {
