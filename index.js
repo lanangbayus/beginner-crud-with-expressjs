@@ -25,6 +25,11 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true })); //digunakan untuk membaca body
 app.use(methodOverride("_method")); // untuk menggantikan method yang disematkan ke dalam form
 
+//define routes
+app.use("/theater", require("./routes/theater"));
+app.use("/movies", require("./routes/movies"));
+app.use("/admin", require("./routes/admin"));
+
 function wrapAsync(fn) {
   return function (req, res, next) {
     fn(req, res, next).catch((err) => next(err));
