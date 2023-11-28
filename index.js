@@ -6,6 +6,9 @@ const app = express();
 const port = 3000;
 const ErrorHandler = require("./ErrorHandler");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const secret = "secret-key";
+const flash = require("connect-flash");
 
 // Models
 const Product = require("./models/product");
@@ -27,7 +30,19 @@ app.set("view engine", "ejs");
 // define middleware
 app.use(express.urlencoded({ extended: true })); //digunakan untuk membaca body
 app.use(methodOverride("_method")); // untuk menggantikan method yang disematkan ke dalam form
-app.use(cookieParser("secret-key"));
+app.use(cookieParser(secret));
+app.use(
+  session({
+    secret: secret,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(flash()); // untuk connect flash
+app.use((req, res, next) => {
+  res.locals.flash_messages = req.flash("flash_messages");
+  next();
+});
 
 //define routes
 app.use("/theater", require("./routes/theater"));
@@ -44,6 +59,28 @@ app.get("/signingin", (req, res) => {
 app.get("/verifycookies", (req, res) => {
   const cookies = req.signedCookies;
   res.send(cookies);
+});
+
+//route untuk session
+app.get("/count", (req, res) => {
+  if (req.session.count) {
+    req.session.count++;
+  } else {
+    req.session.count = 1;
+  }
+  res.send(`count : ${req.session.count}`);
+  //req.session.count = req.session.count ? req.session.count + 1 : 1;
+});
+
+// membuat route baru untuk register
+app.get("/register", (req, res) => {
+  const { username = "Anonymous" } = req.query;
+  req.session.username = username;
+  res.redirect("/dashboard");
+});
+
+app.get("/dashboard", (req, res) => {
+  res.send(`Welcome back ${req.session.username}`);
 });
 
 function wrapAsync(fn) {
@@ -73,6 +110,7 @@ app.post(
   wrapAsync(async (req, res) => {
     const konveksi = new Konveksi(req.body);
     await konveksi.save();
+    req.flash("flash_messages", "Successfully made a new konveksi!");
     res.redirect(`/konveksis`);
   })
 );
